@@ -1,0 +1,19 @@
+# Private database and credentials
+instance/
+*.db
+*.sqlite
+*.sqlite3
+secret_key
+.env
+
+# Python
+__pycache__/
+*.pyc
+venv/
+.venv/
+
+# Temporary files
+*.log
+
+# Local maintenance script
+reset_staff.py

@@ -1,0 +1,63 @@
+
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="theme-color" content="#a51f5d">
+    <meta name="description" content="Lavonne Enterprises - Quality Gas at your doorstep.">
+    <title>{% block title %}Lavonne Enterprises{% endblock %}</title>
+    <link rel="stylesheet" href="{{url_for('static',filename='css/style.css')}}">
+</head>
+<body>
+<header class="top">
+    <a class="brand" href="{{url_for('home')}}">
+        <span class="mark">L</span>
+        <span>
+            LAVONNE
+            <small>ENTERPRISES · GAS & ENERGY</small>
+        </span>
+    </a>
+
+    <nav>
+        <a href="{{url_for('home')}}">Store</a>
+        {% if me %}
+        <a href="{{url_for('dashboard')}}">Dashboard</a>
+        <a href="{{url_for('inventory')}}">Stock</a>
+        <a href="{{url_for('sales')}}">Sales</a>
+        <a href="{{url_for('orders')}}">Orders</a>
+        <a href="{{url_for('debts')}}">Debts</a>
+        <a href="{{url_for('customers')}}">Customers</a>
+        <a href="{{url_for('reports')}}">Reports</a>
+        {% if me.role=='admin' %}
+        <a href="{{url_for('products_page')}}">Products</a>
+        <a href="{{url_for('purchases')}}">Purchases</a>
+        <a href="{{url_for('expenses')}}">Expenses</a>
+        <a href="{{url_for('team')}}">Team</a>
+        {% endif %}
+        <a href="{{url_for('logout')}}">Sign out</a>
+        {% else %}
+        <a href="{{url_for('login')}}">Staff login</a>
+        {% endif %}
+    </nav>
+</header>
+
+<main class="wrap">
+    {% with messages=get_flashed_messages(with_categories=true) %}
+        {% for category,message in messages %}
+        <div class="flash {{category}}">{{message}}</div>
+        {% endfor %}
+    {% endwith %}
+
+    {% block content %}{% endblock %}
+</main>
+
+<footer>
+    <strong>LAVONNE ENTERPRISES</strong>
+    <p>Quality Gas at your doorstep.</p>
+    <p>Free deliveries · Reliable service · Quality gas</p>
+    <small>© Lavonne Enterprises · All rights reserved</small>
+</footer>
+</body>
+</html>
+
