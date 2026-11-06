@@ -76,6 +76,19 @@ def balance(c, debt_id):
 def home():
     products=get_products(True)
     return render_template('store.html',products=products)
+
+
+@app.route('/sitemap.xml')
+def sitemap():
+    xml = f'''<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+    <url>
+        <loc>{'https://lavonne-gas.onrender.com/'}</loc>
+        <changefreq>weekly</changefreq>
+        <priority>1.0</priority>
+    </url>
+</urlset>'''
+    return xml, 200, {'Content-Type': 'application/xml; charset=utf-8'}
 @app.route('/order',methods=['POST'])
 def place_order():
     c=db(); p=c.execute('SELECT * FROM products WHERE id=? AND active=1',(request.form.get('product_id'),)).fetchone()
