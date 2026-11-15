@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <meta name="theme-color" content="#c41e3a">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>{% block title %}Lavonne Gas{% endblock %}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <link rel="icon" href="{{ url_for('static', filename='logo.jpg') }}">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+  <!-- Mobile Overlay -->
+  <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <a href="{{ url_for('home') }}" class="sidebar-brand">
+        <img src="{{ url_for('static', filename='logo.jpg') }}" alt="Lavonne">
+        <div>
+          <strong>LAVONNE</strong>
+          <small>GAS & ENERGY</small>
+        </div>
+      </a>
+      <button class="sidebar-close" onclick="toggleSidebar()"><i class="fas fa-times"></i></button>
+    </div>
+
+    <nav class="sidebar-nav">
+      <a href="{{ url_for('home') }}" class="nav-item">
+        <i class="fas fa-store"></i> <span>Store</span>
+      </a>
+
+      {% if me %}
+      <div class="nav-section">Staff Menu</div>
+
+      <a href="{{ url_for('dashboard') }}" class="nav-item">
+        <i class="fas fa-chart-pie"></i> <span>Dashboard</span>
+      </a>
+      <a href="{{ url_for('inventory') }}" class="nav-item">
+        <i class="fas fa-boxes-stacked"></i> <span>Stock / Inventory</span>
+      </a>
+      <a href="{{ url_for('sales') }}" class="nav-item">
+        <i class="fas fa-cart-shopping"></i> <span>Sales</span>
+      </a>
+      <a href="{{ url_for('orders') }}" class="nav-item">
+        <i class="fas fa-clipboard-list"></i> <span>Orders</span>
+      </a>
+      <a href="{{ url_for('debts') }}" class="nav-item">
+        <i class="fas fa-hand-holding-dollar"></i> <span>Debts</span>
+      </a>
+      <a href="{{ url_for('customers') }}" class="nav-item">
+        <i class="fas fa-users"></i> <span>Customers</span>
+      </a>
+      <a href="{{ url_for('reports') }}" class="nav-item">
+        <i class="fas fa-chart-line"></i> <span>Reports & Profits</span>
+      </a>
+
+      {% if me.role == 'admin' %}
+      <div class="nav-section">Admin Only</div>
+      <a href="{{ url_for('products_page') }}" class="nav-item">
+        <i class="fas fa-tags"></i> <span>Products & Prices</span>
+      </a>
+      <a href="{{ url_for('purchases') }}" class="nav-item">
+        <i class="fas fa-truck"></i> <span>Purchases</span>
+      </a>
+      <a href="{{ url_for('expenses') }}" class="nav-item">
+        <i class="fas fa-receipt"></i> <span>Expenses</span>
+      </a>
+      <a href="{{ url_for('team') }}" class="nav-item">
+        <i class="fas fa-user-gear"></i> <span>Team</span>
+      </a>
+      {% endif %}
+
+      <div class="nav-section">Account</div>
+      <a href="{{ url_for('logout') }}" class="nav-item logout">
+        <i class="fas fa-right-from-bracket"></i> <span>Sign Out</span>
+      </a>
+      {% else %}
+      <a href="{{ url_for('login') }}" class="nav-item">
+        <i class="fas fa-lock"></i> <span>Staff Login</span>
+      </a>
+      {% endif %}
+    </nav>
+
+    <div class="sidebar-footer">
+      <small>Lavonne Enterprises</small>
+    </div>
+  </aside>
+
+  <!-- MAIN WRAPPER -->
+  <div class="main-wrapper">
+    <!-- TOP BAR -->
+    <header class="topbar">
+      <div class="topbar-left">
+        <button class="menu-btn" onclick="toggleSidebar()" aria-label="Menu">
+          <span></span><span></span><span></span>
+        </button>
+        <a href="{{ url_for('home') }}" class="top-brand">
+          <img src="{{ url_for('static', filename='logo.jpg') }}" alt="Lavonne">
+          <span>LAVONNE <small>GAS</small></span>
+        </a>
+      </div>
+
+      <div class="topbar-right">
+        {% if me %}
+          <span class="user-chip">
+            <i class="fas fa-user-circle"></i>
+            {{ me.username }} · {{ me.role|title }}
+          </span>
+        {% else %}
+          <a href="{{ url_for('login') }}" class="login-link">Staff Login</a>
+        {% endif %}
+      </div>
+    </header>
+
+    <!-- PAGE CONTENT -->
+    <main class="content">
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% for category, message in messages %}
+          <div class="flash {{ category }}">{{ message }}</div>
+        {% endfor %}
+      {% endwith %}
+
+      {% block content %}{% endblock %}
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="site-footer">
+      <div class="footer-inner">
+        <div class="footer-brand">
+          <strong>Lavonne Gas & Energy</strong>
+          <p>Quality gas at your doorstep</p>
+        </div>
+        <div class="footer-contact">
+          <p><i class="fas fa-phone"></i> 0743 222 099 · 0714 524 590 · 0701 138 893</p>
+          <p><i class="fas fa-clock"></i> Open daily · Free delivery available</p>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        &copy; 2026 Lavonne Enterprises. All rights reserved.
+      </div>
+    </footer>
+  </div>
+
+  <!-- Floating WhatsApp Button -->
+  <a href="https://wa.me/254743222099" class="whatsapp-float" target="_blank" rel="noopener" title="Chat on WhatsApp">
+    <i class="fab fa-whatsapp"></i>
+  </a>
+
+  <script>
+    function toggleSidebar() {
+      document.getElementById('sidebar').classList.toggle('open');
+      document.getElementById('sidebarOverlay').classList.toggle('show');
+      document.body.classList.toggle('sidebar-open');
+    }
+  </script>
+</body>
+</html>

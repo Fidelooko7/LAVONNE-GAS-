@@ -1,0 +1,120 @@
+{% extends 'base.html' %}
+{% block title %}Dashboard | Lavonne Gas{% endblock %}
+{% block content %}
+
+<div class="dash-welcome">
+  <div>
+    <p class="eyebrow" style="color:#ff8dbb;">BUSINESS OVERVIEW</p>
+    <h1>Welcome back, {{ me.username }}</h1>
+    <p>{{ me.role|title }} · {{ selected or 'Today' }}</p>
+  </div>
+  <form class="date-filter" method="get">
+    <label>View date
+      <input type="date" name="date" value="{{ selected }}">
+    </label>
+    <button type="submit">Apply</button>
+  </form>
+</div>
+
+<div class="quick-actions">
+  <a href="{{ url_for('sales') }}"><i class="fas fa-plus"></i> New Sale</a>
+  <a href="{{ url_for('inventory') }}"><i class="fas fa-boxes-stacked"></i> Stock</a>
+  <a href="{{ url_for('orders') }}"><i class="fas fa-clipboard-list"></i> Orders</a>
+  <a href="{{ url_for('debts') }}"><i class="fas fa-hand-holding-dollar"></i> Debts</a>
+  {% if me.role == 'admin' %}
+  <a href="{{ url_for('reports') }}"><i class="fas fa-chart-line"></i> Reports</a>
+  {% endif %}
+</div>
+
+<div class="metric-grid">
+  <div class="metric">
+    <span>Sales (selected date)</span>
+    <strong>KSh {{ money(sales.gross) }}</strong>
+    <small>{{ sales.units }} cylinders sold</small>
+  </div>
+  <div class="metric">
+    <span>Money Collected</span>
+    <strong>KSh {{ money(sales.collected) }}</strong>
+    <small>Actual payments received</small>
+  </div>
+  {% if me.role == 'admin' %}
+  <div class="metric">
+    <span>Gross Profit</span>
+    <strong>KSh {{ money(sales.gross_profit) }}</strong>
+    <small>Based on recorded costs</small>
+  </div>
+  <div class="metric">
+    <span>Net Profit Estimate</span>
+    <strong>KSh {{ money(net) }}</strong>
+    <small>After expenses</small>
+  </div>
+  {% endif %}
+  <div class="metric">
+    <span>Full Cylinders</span>
+    <strong>{{ stock.fulls }}</strong>
+    <small>{{ stock.empties }} empties recorded</small>
+  </div>
+  <div class="metric">
+    <span>Outstanding Debt</span>
+    <strong style="color: {% if debt > 0 %}#c41e3a{% else %}#16845b{% endif %}">KSh {{ money(debt) }}</strong>
+    <small>Across all customers</small>
+  </div>
+</div>
+
+<div class="split">
+  <section class="panel">
+    <div class="section-head">
+      <h2>Recent Sales</h2>
+      <a href="{{ url_for('sales') }}" style="font-size:13px;color:var(--primary);font-weight:600;">View all →</a>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Product</th>
+            <th>Qty</th>
+            <th>Total</th>
+            <th>Paid</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for r in recent %}
+          <tr>
+            <td>{{ r.brand }} {{ r.size }}</td>
+            <td>{{ r.qty }}</td>
+            <td>KSh {{ money(r.total) }}</td>
+            <td>KSh {{ money(r.paid) }}</td>
+          </tr>
+          {% else %}
+          <tr><td colspan="4" class="empty">No sales recorded yet for this date.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="panel" style="background:linear-gradient(160deg,#fff5f7,#fff);border-color:#f8d0da;">
+    <p class="eyebrow">OPERATIONS</p>
+    <h2 style="margin-bottom:10px;">{{ orders }} order{{ 's' if orders != 1 else '' }} need attention</h2>
+    <p style="color:var(--muted);font-size:14px;margin-bottom:18px;">
+      Review customer requests, verify payment or credit, then authorise dispatch.
+    </p>
+    <a class="button" href="{{ url_for('orders') }}">
+      <i class="fas fa-clipboard-list"></i> Manage Orders
+    </a>
+  </section>
+</div>
+
+{% if me.role == 'admin' %}
+<section class="panel">
+  <h2 style="margin-bottom:14px;">Administrator Tools</h2>
+  <div class="quick-actions" style="margin:0;">
+    <a href="{{ url_for('products_page') }}"><i class="fas fa-tags"></i> Products & Prices</a>
+    <a href="{{ url_for('purchases') }}"><i class="fas fa-truck"></i> Purchases</a>
+    <a href="{{ url_for('expenses') }}"><i class="fas fa-receipt"></i> Expenses</a>
+    <a href="{{ url_for('team') }}"><i class="fas fa-user-gear"></i> Team</a>
+  </div>
+</section>
+{% endif %}
+
+{% endblock %}
